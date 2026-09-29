@@ -4,6 +4,7 @@ from http.server import BaseHTTPRequestHandler
 G = os.environ["GEMINI_API_KEY"]
 QURL, QKEY = os.environ["QDRANT_URL"].rstrip("/"), os.environ["QDRANT_API_KEY"]
 BASE = "https://generativelanguage.googleapis.com/v1beta/models"
+MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash")  # naam badalna ho to Vercel env mein GEMINI_MODEL set karein
 
 
 def embed(text):
@@ -31,8 +32,14 @@ class handler(BaseHTTPRequestHandler):
             prompt = ("Sirf neeche diye gaye context se jawab do. Agar jawab context mein na ho to kaho "
                       "'Yeh book mein nahi hai'. Jawab usi zubaan mein do jis mein sawal poocha gaya.\n\n"
                       f"Context:\n{ctx}\n\nSawal: {q}")
-            r = httpx.post(f"{BASE}/gemini-2.5-flash:generateContent?key={G}",
+            r = httpx.post(f"{BASE}/{MODEL}:generateContent?key={G}",
                            json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=50).json()
-            self._send(200, {"answer": r["candidates"][0]["content"]["parts"][0]["text"]})
+            if "candidates" not in r:
+                msg = r.get("error", {}).get("message") or str(r.get("promptFeedback") or r)
+                self._send(200, {"answer": "Gemini error: " + msg})
+                return
+            parts = r["candidates"][0].get("content", {}).get("parts", [])
+            answer = "".join(p.get("text", "") for p in parts) or "Jawab nahi mila, dobara try karein."
+            self._send(200, {"answer": answer})
         except Exception as e:
             self._send(500, {"answer": "Server error: " + str(e)})
