@@ -37,3 +37,6 @@
 .foot button:hover:not(:disabled){transform:scale(1.06)}.foot button:disabled{opacity:.5;cursor:not-allowed}
 @media (max-width:480px){.panel{right:8px;bottom:8px;width:calc(100vw - 16px);height:calc(100vh - 16px);max-height:none}.fab{right:16px;bottom:16px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+
+.code{background:#0f172a;color:#e2e8f0;padding:.6rem .8rem;border-radius:10px;font-size:.8rem;overflow-x:auto;margin:.4rem 0;white-space:pre}
+.msg{max-width:92%}

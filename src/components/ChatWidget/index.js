@@ -19,8 +19,8 @@ const TXT = {
   },
 };
 
-// Chhota sa formatter: **bold** aur bullet lines
-function Rich({text}) {
+// Chhota sa formatter: **bold**, bullets aur ``` code blocks
+function Lines({text}) {
   return text.split('\n').map((line, i) => {
     const bullet = /^\s*[*-]\s+/.test(line);
     const clean = line.replace(/^\s*[*-]\s+/, '');
@@ -28,6 +28,11 @@ function Rich({text}) {
       p.startsWith('**') && p.endsWith('**') ? <b key={j}>{p.slice(2, -2)}</b> : p);
     return <div key={i} className={bullet ? styles.li : undefined}>{bullet ? '• ' : ''}{parts}</div>;
   });
+}
+
+function Rich({text}) {
+  return text.split(/```[a-zA-Z]*\n?/).map((chunk, i) =>
+    i % 2 === 1 ? <pre key={i} className={styles.code}>{chunk.replace(/\n$/, '')}</pre> : <Lines key={i} text={chunk.trim()} />);
 }
 
 export default function ChatWidget() {
@@ -56,7 +61,7 @@ export default function ChatWidget() {
     try {
       const r = await fetch('/api/chat', {
         method: 'POST', headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({question, lang}),
+        body: JSON.stringify({question, lang, history: msgs.slice(-6)}),
       });
       const d = await r.json();
       setMsgs((m) => [...m, {role: 'bot', text: d.answer}]);
