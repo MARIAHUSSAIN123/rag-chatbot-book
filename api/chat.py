@@ -1,10 +1,11 @@
-import os, json, httpx
+import os, json, time, httpx
 from http.server import BaseHTTPRequestHandler
 
 G = os.environ["GEMINI_API_KEY"]
 QURL, QKEY = os.environ["QDRANT_URL"].rstrip("/"), os.environ["QDRANT_API_KEY"]
 BASE = "https://generativelanguage.googleapis.com/v1beta/models"
-MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash")
+# Pehla model busy ho to agla try hota hai. Vercel env GEMINI_MODEL mein comma se naam de sakte hain.
+MODELS = [m.strip() for m in os.environ.get("GEMINI_MODEL", "gemini-3.5-flash,gemini-3.1-flash-lite,gemini-2.5-flash").split(",") if m.strip()]
 
 SYSTEM = """You are a friendly expert teacher for an AI & Data Science course book.
 You receive BOOK CONTEXT (excerpts from the book) and the recent chat.
@@ -17,6 +18,33 @@ Rules:
 5. Follow-ups like "isky bary mein", "explain more", "iska example" refer to the previous topic in the chat.
 6. Format: plain text, **bold** for key terms, "- " bullets. No markdown headers or tables. Code goes in triple-backtick fences.
 7. For greetings or small talk, answer in one or two friendly lines."""
+
+
+def generate(payload):
+    """Busy/limit errors par retry aur backup models. (data, error) return karta hai."""
+    start, last = time.time(), "unknown error"
+    for model in MODELS:
+        for attempt in range(2):
+            if time.time() - start > 42:
+                return None, last
+            try:
+                data = httpx.post(f"{BASE}/{model}:generateContent?key={G}", json=payload, timeout=25).json()
+            except Exception as e:
+                last = str(e)
+                time.sleep(1)
+                continue
+            if "candidates" in data:
+                return data, None
+            err = data.get("error", {})
+            last = err.get("message") or str(data.get("promptFeedback") or data)
+            code = err.get("code")
+            if code in (429, 500, 503, 504):
+                time.sleep(1.2)
+                continue          # dobara try, phir agla model
+            if code == 404:
+                break             # ye model nahi mila, agla try karo
+            return None, last     # key ghalat / content blocked, retry ka faida nahi
+    return None, last
 
 
 def embed(text):
@@ -51,14 +79,11 @@ class handler(BaseHTTPRequestHandler):
                              for h in history)
             prompt = f"BOOK CONTEXT:\n{ctx}\n\nRECENT CHAT:\n{chat or '(none)'}\n\nUSER'S LATEST MESSAGE: {q}"
 
-            r = httpx.post(f"{BASE}/{MODEL}:generateContent?key={G}",
-                           json={"systemInstruction": {"parts": [{"text": SYSTEM}]},
+            r, error = generate({"systemInstruction": {"parts": [{"text": SYSTEM}]},
                                  "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-                                 "generationConfig": {"maxOutputTokens": 1800, "temperature": 0.6}},
-                           timeout=55).json()
-            if "candidates" not in r:
-                msg = r.get("error", {}).get("message") or str(r.get("promptFeedback") or r)
-                self._send(200, {"answer": "Gemini error: " + msg})
+                                 "generationConfig": {"maxOutputTokens": 1800, "temperature": 0.6}})
+            if error:
+                self._send(200, {"answer": "Abhi AI service busy hai, thori der baad dobara try karein. (" + error[:120] + ")"})
                 return
             parts = r["candidates"][0].get("content", {}).get("parts", [])
             answer = "".join(p.get("text", "") for p in parts) or "Jawab nahi mila, dobara try karein."
