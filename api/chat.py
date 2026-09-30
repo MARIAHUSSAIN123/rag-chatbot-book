@@ -29,8 +29,10 @@ class handler(BaseHTTPRequestHandler):
                               json={"vector": embed(q), "limit": 4, "with_payload": True},
                               timeout=30).json()["result"]
             ctx = "\n\n".join(h["payload"]["text"] for h in hits)
-            prompt = ("Sirf neeche diye gaye context se jawab do. Agar jawab context mein na ho to kaho "
-                      "'Yeh book mein nahi hai'. Jawab usi zubaan mein do jis mein sawal poocha gaya.\n\n"
+            prompt = ("You are a helpful assistant for an AI & Data Science book. Answer ONLY from the context below. "
+                      "If the answer is not in the context, say it is not in the book. "
+                      "Reply in the same language as the question: English, or Roman Urdu (Urdu written in English letters) "
+                      "if the question is in Roman Urdu. Keep answers short and clear.\n\n"
                       f"Context:\n{ctx}\n\nSawal: {q}")
             r = httpx.post(f"{BASE}/{MODEL}:generateContent?key={G}",
                            json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=50).json()

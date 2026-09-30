@@ -1,12 +1,11 @@
 ---
 sidebar_position: 0
-slug: /
 title: Introduction
 ---
 
 # AI and Data Science Book
 
-Based on the SMIT AI and Data Science syllabus by Miss Javeria Hassan.
+A complete AI and Data Science course book, created by Maria Hussain.
 
 - **Duration:** 10 months (can extend to 11)
 - **Level:** Beginner to Advanced

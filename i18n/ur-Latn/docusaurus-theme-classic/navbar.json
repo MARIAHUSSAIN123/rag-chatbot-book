@@ -1,0 +1,4 @@
+{
+  "title": {"message": "AI aur Data Science Book", "description": "The title in the navbar"},
+  "item.label.Book": {"message": "Kitab", "description": "Navbar item with label Book"}
+}

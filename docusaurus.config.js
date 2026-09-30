@@ -6,14 +6,15 @@ const config = {
   title: 'AI & Data Science Book',
   tagline: 'Beginner se Advanced tak | Beginner to Advanced',
   favicon: 'img/favicon.ico',
-    future: {
-     v4: true,
-     faster: {
-       swcHtmlMinimizer: false,
-       swcJsMinimizer: false,
-       lightningCssMinimizer: false,
-     },
-   },
+  future: {
+    v4: true,
+    // Windows par SWC native files ka masla aata hai, is liye ye teen band hain
+    faster: {
+      swcHtmlMinimizer: false,
+      swcJsMinimizer: false,
+      lightningCssMinimizer: false,
+    },
+  },
 
   // Vercel deploy ke baad apna real URL yahan daalein
   url: 'https://your-book.vercel.app',
@@ -35,7 +36,7 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          routeBasePath: '/', // book seedha homepage par khulegi
+          routeBasePath: 'docs',
           sidebarPath: './sidebars.js',
         },
         blog: false,
@@ -52,13 +53,12 @@ const config = {
         title: 'AI & Data Science Book',
         items: [
           {type: 'docSidebar', sidebarId: 'bookSidebar', position: 'left', label: 'Book'},
-          {to: '/chatbot', label: 'Chatbot', position: 'left'},
           {type: 'localeDropdown', position: 'right'},
         ],
       },
       footer: {
         style: 'dark',
-        copyright: `Based on the SMIT AI & Data Science syllabus (Miss Javeria Hassan). Built with Docusaurus.`,
+        copyright: `Created with ♥ by Maria Hussain`,
       },
       prism: {
         theme: prismThemes.github,

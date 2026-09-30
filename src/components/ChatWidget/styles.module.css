@@ -1,0 +1,39 @@
+.fab{position:fixed;right:24px;bottom:24px;z-index:1000;width:62px;height:62px;border:none;border-radius:50%;cursor:pointer;color:#fff;
+  background:linear-gradient(135deg,#4f46e5,#14b8a6);box-shadow:0 8px 24px rgba(79,70,229,.45);display:flex;align-items:center;justify-content:center;
+  animation:pop .5s cubic-bezier(.2,1.6,.4,1) both, bob 3s ease-in-out 1s infinite;transition:transform .2s}
+.fab:hover{transform:scale(1.12) rotate(-6deg)}
+.ring{position:absolute;inset:0;border-radius:50%;border:2px solid #6366f1;animation:ping 2s ease-out infinite}
+@keyframes ping{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.7);opacity:0}}
+@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -6px}}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.panel{position:fixed;right:24px;bottom:24px;z-index:1001;width:380px;max-width:calc(100vw - 24px);height:560px;max-height:calc(100vh - 48px);
+  display:flex;flex-direction:column;overflow:hidden;border-radius:20px;background:var(--ifm-background-surface-color);
+  box-shadow:0 20px 60px rgba(0,0,0,.3);border:1px solid var(--ifm-color-emphasis-200);transform-origin:bottom right;animation:open .35s cubic-bezier(.2,1.2,.4,1) both}
+@keyframes open{from{opacity:0;transform:scale(.6) translateY(40px)}to{opacity:1;transform:none}}
+.head{display:flex;align-items:center;gap:.7rem;padding:.9rem 1rem;color:#fff;background:linear-gradient(120deg,#4f46e5,#0ea5e9,#14b8a6);background-size:200% 200%;animation:flow 8s ease infinite}
+@keyframes flow{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+.avatar{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:1.4rem}
+.headText{flex:1;display:flex;flex-direction:column;line-height:1.25}.headText span{font-size:.78rem;opacity:.92}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4ade80;margin-right:4px;animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.35}}
+.x{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:50%;width:30px;height:30px;cursor:pointer;transition:transform .2s}
+.x:hover{transform:rotate(90deg)}
+.body{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.6rem;background:var(--ifm-background-color)}
+.msg{max-width:86%;padding:.6rem .85rem;border-radius:16px;font-size:.93rem;line-height:1.5;word-wrap:break-word;animation:msgin .3s ease both}
+@keyframes msgin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.bot{align-self:flex-start;background:var(--ifm-color-emphasis-200);border-bottom-left-radius:4px}
+.user{align-self:flex-end;color:#fff;background:linear-gradient(135deg,#4f46e5,#6366f1);border-bottom-right-radius:4px}
+.li{padding-left:.3rem}
+.chips{display:flex;flex-direction:column;gap:.4rem;align-items:flex-start}
+.chips button{border:1px solid #6366f1;color:#6366f1;background:transparent;border-radius:99px;padding:.35rem .8rem;cursor:pointer;font-size:.85rem;transition:all .2s}
+.chips button:hover{background:#6366f1;color:#fff;transform:translateX(4px)}
+.dots i{display:inline-block;width:6px;height:6px;margin:0 1px;border-radius:50%;background:currentColor;animation:jump 1.1s infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes jump{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.foot{display:flex;gap:.5rem;padding:.7rem;border-top:1px solid var(--ifm-color-emphasis-200);background:var(--ifm-background-surface-color)}
+.foot input{flex:1;padding:.6rem .9rem;border-radius:99px;border:1px solid var(--ifm-color-emphasis-300);background:var(--ifm-background-color);color:inherit;outline:none}
+.foot input:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.2)}
+.foot button{border:none;border-radius:99px;padding:0 1.1rem;color:#fff;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#4f46e5,#14b8a6);transition:transform .2s,opacity .2s}
+.foot button:hover:not(:disabled){transform:scale(1.06)}.foot button:disabled{opacity:.5;cursor:not-allowed}
+@media (max-width:480px){.panel{right:8px;bottom:8px;width:calc(100vw - 16px);height:calc(100vh - 16px);max-height:none}.fab{right:16px;bottom:16px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}

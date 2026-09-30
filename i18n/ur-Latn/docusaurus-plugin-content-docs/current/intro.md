@@ -1,12 +1,11 @@
 ---
 sidebar_position: 0
-slug: /
 title: Taaruf
 ---
 
 # AI aur Data Science Book
 
-Yeh book SMIT ke AI aur Data Science syllabus (Miss Javeria Hassan) par mabni hai.
+Yeh AI aur Data Science ki mukammal course book hai, jo Maria Hussain ne banayi hai.
 
 - **Muddat:** 10 mahine (11 mahine tak barh sakti hai)
 - **Level:** Beginner se Advanced
